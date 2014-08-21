@@ -145,32 +145,7 @@
 
         </div>
 
-        <g:if env="development" test="${!printView}">
-          <div class="expandable-debug">
-              <hr />
-              <h3>Debug</h3>
-              <div>
-                  <h4>KO model</h4>
-                  <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
-                  <h4>Activity</h4>
-                  <pre>${activity?.encodeAsHTML()}</pre>
-                  <h4>Site</h4>
-                  <pre>${site?.encodeAsHTML()}</pre>
-                  <h4>Sites</h4>
-                  <pre>${(sites as JSON).toString()}</pre>
-                  <h4>Project</h4>
-                  <pre>${project?.encodeAsHTML()}</pre>
-                  <h4>Activity model</h4>
-                  <pre>${metaModel}</pre>
-                  <h4>Output models</h4>
-                  <pre>${outputModels?.encodeAsHTML()}</pre>
-                  <h4>Themes</h4>
-                  <pre>${themes.toString()}</pre>
-                  <h4>Map features</h4>
-                  <pre>${mapFeatures.toString()}</pre>
-              </div>
-          </div>
-        </g:if>
+
     </div>
 
 <!-- ko stopBinding: true -->
@@ -451,56 +426,6 @@
             master.reset();
         });
 
-        $('.edit-btn').click(function () {
-            var data = ${activity.outputs},
-                outputName = $(this).parent().previous().html(),
-                outputId;
-            // search for corresponding outputs in the activity data
-            $.each(data, function (i,output) { // iterate output data in the activity to
-                                               // find any matching the meta-model name
-                if (output.name === outputName) {
-                    outputId = output.outputId;
-                }
-            });
-            if (outputId) {
-                // build edit link
-                document.location.href = fcConfig.serverUrl + "/output/edit/" + outputId +
-                    "?returnTo=" + here;
-            } else {
-                // build create link
-                document.location.href = fcConfig.serverUrl + "/output/create?activityId=${activity.activityId}" +
-                    '&outputName=' + encodeURIComponent(outputName) +
-                    "&returnTo=" + here;
-            }
-
-        });
-
-        ko.bindingHandlers.editOutput = {
-            init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                var outputName = ko.utils.unwrapObservable(valueAccessor()),
-                    activity = bindingContext.$root,
-                    outputId;
-
-                // search for corresponding outputs in the activity data
-                $.each(activity.outputs, function (i,output) { // iterate output data in the activity to
-                                                                  // find any matching the meta-model name
-                    if (output.name === outputName) {
-                        outputId = output.outputId;
-                    }
-                });
-                if (outputId) {
-                    // build edit link
-                    $(element).html('Edit data');
-                    $(element).attr('href', fcConfig.serverUrl + "/output/edit/" + outputId +
-                        "?returnTo=" + here);
-                } else {
-                    // build create link
-                    $(element).attr('href', fcConfig.serverUrl + '/output/create?activityId=' + activity.activityId +
-                        '&outputName=' + encodeURIComponent(outputName) +
-                        "&returnTo=" + here);
-                }
-            }
-        };
 
         function ViewModel (act, site, project, metaModel) {
             var self = this;
