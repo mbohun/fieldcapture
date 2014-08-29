@@ -167,6 +167,9 @@ if(!app.http.header.userId){
 if(!ecodata.baseUrl){
     ecodata.baseUrl = "http://ecodata.ala.org.au/ws/"
 }
+if (!ala.image.service.url) {
+    ala.image.service.url = "http://images-dev.ala.org.au/"
+}
 if(!upload.images.url){
     upload.images.url = "http://fieldcapture.ala.org.au/images/"
 }
@@ -203,7 +206,9 @@ environments {
         layout.skin = "nrm"
         security.cas.appServerName = serverName
         security.cas.contextPath = "/" + appName
-        ecodata.baseUrl = 'http://devt.ala.org.au:8080/ecodata/ws/'
+        //ecodata.baseUrl = 'http://devt.ala.org.au:8080/ecodata/ws/'
+        ecodata.baseUrl = 'http://ecodata-test.ala.org.au/ws/'
+
         upload.images.url = grails.serverURL+'/image/'
         emailFilter = /[A-Z0-9._%-]+@csiro\.au|chris\.godwin\.ala@gmail.com/
         logging.dir = '.'
