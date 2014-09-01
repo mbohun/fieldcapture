@@ -243,18 +243,27 @@ class WebService {
      * @param file the Multipart file object to forward.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, MultipartFile file) {
+    def postMultipart(url, Map params, MultipartFile file, fileParam = null) {
 
         def result = [:]
+        def user = userService.getUser()
+
+        def fileParamName = fileParam?:file.name
         HTTPBuilder builder = new HTTPBuilder(url)
         builder.request(Method.POST) { request ->
             requestContentType : 'multipart/form-data'
             MultipartEntity content = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-            content.addPart(file.name, new InputStreamBody(file.inputStream, file.contentType, file.originalFilename))
+            content.addPart(fileParamName, new InputStreamBody(file.inputStream, file.contentType, file.originalFilename))
             params.each { key, value ->
                 content.addPart(key, new StringBody(value))
             }
             headers.'Authorization' = grailsApplication.config.api_key
+            if (user) {
+                headers[grailsApplication.config.app.http.header.userId] = user.userId
+            }
+            else {
+                log.warn("No user associated with request: ${url}")
+            }
             request.setEntity(content)
 
             response.success = {resp, message ->
